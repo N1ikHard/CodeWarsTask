@@ -6,12 +6,7 @@ namespace CodeWarsTask
     {
         static void Main(string[] args)
         {
-           Console.WriteLine(Kata.GetReadableTime(0));
-           Console.WriteLine(Kata.GetReadableTime(5));
-            Console.WriteLine(Kata.GetReadableTime(60));
-            Console.WriteLine(Kata.GetReadableTime(86399));
-           
-           Console.WriteLine(Kata.GetReadableTime(359999));
+            Console.WriteLine(Kata.DuplicateEncode("Success"));
         }
     }
 }
