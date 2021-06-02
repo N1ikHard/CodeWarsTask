@@ -6,7 +6,8 @@ namespace CodeWarsTask
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(Kata.DuplicateEncode("Success"));
+            int[] array = new int[] { 1, 1, 1, 5, 5,3 };
+            Console.WriteLine(Kata.Score(array));
         }
     }
 }
