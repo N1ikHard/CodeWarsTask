@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -59,15 +60,15 @@ namespace CodeWarsTask
             for (int i = 0; i < array.Length; i++)
                 array[i] = '(';
 
-                for (int i = 0; i < text.Length-1; i++)
-                     for(int j = i+1; j < text.Length; j++)
-                     {
-                          if (text[i] == text[j])
-                           {
-                                array[i] = ')';
-                                array[j] = ')';
-                           }
-                      }
+            for (int i = 0; i < text.Length - 1; i++)
+                for (int j = i + 1; j < text.Length; j++)
+                {
+                    if (text[i] == text[j])
+                    {
+                        array[i] = ')';
+                        array[j] = ')';
+                    }
+                }
 
             return String.Concat(array);
         }
@@ -105,7 +106,7 @@ namespace CodeWarsTask
             CountRepeat.Add(3, 0);
             CountRepeat.Add(4, 0);
             CountRepeat.Add(5, 0);
-            CountRepeat.Add(6,0);
+            CountRepeat.Add(6, 0);
 
             for (int i = 0; i < dice.Length; i++)
                 switch (dice[i])
@@ -134,17 +135,93 @@ namespace CodeWarsTask
                 if (num.Key == 1 || num.Key == 5) continue;
                 else
                     if (num.Value >= 3)
-                        score += 100 * num.Key;
-                
+                    score += 100 * num.Key;
+
             if (CountRepeat[1] >= 3)
-               score += 1000+ ((CountRepeat[1] % 3) * 100); 
+                score += 1000 + ((CountRepeat[1] % 3) * 100);
             else score += (CountRepeat[1] % 3) * 100;
 
             if (CountRepeat[5] >= 3)
-                score += 500+((CountRepeat[5] % 3) * 50);
+                score += 500 + ((CountRepeat[5] % 3) * 50);
             else score += (CountRepeat[5] % 3) * 50;
-            
+
             return score;
         }
+        public static Dictionary<string, List<int>> GetPeaks(int[] arr)
+        {
+            #region ТЗ
+            /*
+            Повторите в этом ката, вы напишете функцию, которая возвращает позиции и значения "пиков" 
+            (или локальных максимумов) числового массива.
+            Например, массив arr = [0, 1, 2, 5, 1, 0] имеет пик в позиции 
+            3 со значением 5 (так как arr[3] равен 5).
+            Выходные данные будут возвращены в виде словаря<string, List<int>> 
+            с двумя парами ключ-значение: "pos" и "peaks". 
+            Если в данном массиве нет пика, просто верните 
+            {"pos" => new List<int>(), "peaks" => new List<int>()}.
+
+            Пример: PeackPicks([3, 2, 3, 6, 4, 1, 2, 3, 2, 1, 2, 3]) 
+            должно возвращать {pos: [3, 7], peaks: [6, 3]}
+
+            Все входные массивы будут допустимыми целочисленными массивами 
+            (хотя они все равно могут быть пустыми), поэтому вам не нужно будет проверять входные данные.
+
+            Первый и последний элементы массива не будут рассматриваться как пики
+            (в контексте математической функции мы не знаем, что происходит после и до, и,
+            следовательно, мы не знаем, является ли это пиком или нет).
+
+            Кроме того, остерегайтесь плато !!! 
+            [1, 2, 2, 2, 1] имеет пик в то время как
+            [1, 2, 2, 2, 3] и [1, 2, 2, 2, 2] нет. 
+            В случае плато-пика, верните только положение 
+            и значение начала плато. 
+            Например: Пикпики([1, 2, 2, 2, 1]) возвращает 
+            {pos: [1], peaks: [2]}
+
+            
+            Примеры  18, 9, -3, 8, 6, 10, 16, 9, 17, 12, -4, 0, 15, -3, 4, -2, 6, -1, 15, 14, 9, 10, 14, 19, 5, 16, 8, 2, 12
+             18, -2, -1, 15, 10, 5, 12, 17, 13, 9, 4, 8, 10, 0, 13, -3, -4, 13, 9, 14, 2, 19, 19, -3, 2, 11, 14, 6, 6
+            -1, 12, -5, -4, 7, 13, 15, 18, 10, 6, 0, -4, 0, 19, 11, 6, 5, 14, 16, 13, 12, 12, 13, 10
+
+
+            Работает , роходит пробное тестирование , проходит еще 2 варианта теста  , но в итоге
+            CodeWars выкидывает такое исключение:
+            Test Failed
+            Testing for 18, 9, -3, 8, 6, 10, 16, 9, 17, 12, -4, 0, 15, -3, 4, -2, 6, -1, 15, 14, 9, 10, 14, 19, 5, 16, 8, 2, 12:
+             Expected and actual are both <System.Collections.Generic.Dictionary`2[System.String,System.Collections.Generic.List`1[System.Int32]]> with 2 elements
+             Values differ at index [0]
+             Expected: 3
+             But was:  0
+             */
+            #endregion
+            Dictionary<string, List<int>> keyValuePairs=new Dictionary<string, List<int>>();
+            keyValuePairs.Add("pos" , new List<int>());
+            keyValuePairs.Add("peaks", new List<int>());
+            int index = 1;
+            int Maximum;
+            bool repeat = true;
+            for (int i = 1; i < arr.Length-1; i++)
+            {
+                if (arr[i] < arr[i + 1])
+                {
+                    Maximum = arr[i + 1];
+                    index = i+1;
+                    repeat = true;
+                }
+                if (arr[i] > arr[i + 1])
+                {
+                    if (repeat)
+                    {
+                        int n1 = Convert.ToInt32(index);
+                        keyValuePairs["pos"].Add(n1);
+                        int n2 = Convert.ToInt32(arr[index]);
+                        keyValuePairs["peaks"].Add(n2);
+                        repeat = false;
+                    }
+                }               
+            }    
+            return keyValuePairs;
+            }      
+        
     }
-}
+    } 
