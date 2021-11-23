@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 
 namespace CodeWarsTask
 {
-    class Kata
+     static class Kata
     {
+        /// <summary>
+        /// Преобразование секунд в формат ЧЧ:ММ:СС
+        /// </summary>
+        /// <param name="seconds"></param>
+        /// <returns></returns>
         public static string GetReadableTime(int seconds)
         {
             #region ТЗ
@@ -38,6 +43,11 @@ namespace CodeWarsTask
             #endregion
             return new string((seconds / (60 * 60) % 100).ToString("00") + ":" + ((seconds / 60) % 60).ToString("00") + ":" + (seconds % 60).ToString("00"));
         }
+        /// <summary>
+        /// Преобразование строки в строку из скобкок , инструкция внутри
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static string DuplicateEncode(string text)
         {
             #region ТЗ
@@ -72,6 +82,11 @@ namespace CodeWarsTask
 
             return String.Concat(array);
         }
+        /// <summary>
+        /// Метод , считающий очки(аргумент) в соответсвии с правилами(указаны в комментариии)
+        /// </summary>
+        /// <param name="dice"></param>
+        /// <returns></returns>
         public static int Score(int[] dice)
         {
             #region
@@ -221,7 +236,94 @@ namespace CodeWarsTask
                 }               
             }    
             return keyValuePairs;
-            }      
-        
+        }
+        /// <summary>
+        /// Метод расщирения возвращающий строку , состоящую из элементов массива
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns></returns>
+        public static string GetString(this string[] array)
+        {
+            string result = "";
+            foreach (var item in array)
+                result += item + " ";
+            return result;
+        }
+        /// <summary>
+        /// Метод , преобразующий все слова строки таким образом , что первая буква слова становится в конец + добавляется суффикс "ay"
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string PigIt(this string str)
+        {
+            #region ТЗ
+            //Переместите первую букву каждого слова в его конец, затем добавьте "ай" в конец слова.Оставьте знаки препинания нетронутыми.
+            //Примеры
+            //Cata.PigIt("Hello World!");// elloHay orldWay!
+
+
+            // Лучнее решение     return string.Join(" ", str.Split(' ').Select(w => w.Any(char.IsPunctuation) ? w : w.Substring(1) + w[0] + "ay"));
+            
+            #endregion
+
+            string[] array = str.Split(" ");
+            str = "";
+            foreach (var item in array)
+                if (item == "," || item == "." || item == "!")
+                    str += item+" ";
+                else str += item.Insert(item.Length, item[0] + "ay").Remove(0, 1) + " ";
+            return str.Remove(str.Length-1,1);
+        }
+
+        /// <summary>
+        /// Метод , форматирования кол-ва секунд в текстовое представление даты год/дни/часы/секунды
+        /// </summary>
+        /// <param name="seconds"></param>
+        /// <returns></returns>
+        public static string formatDuration(int seconds)
+        {
+            if (seconds <= 0) return "Now";
+            #region ТЗ
+            //Ваша задача для выполнения этого Ката -написать функцию, которая форматирует продолжительность,
+            //заданную в виде количества секунд, удобным для человека способом.
+            //Функция должна принимать неотрицательное целое число. Если он равен нулю, он просто возвращает "сейчас".
+            //В противном случае продолжительность выражается в виде комбинации лет, дней, часов, минут и секунд.
+            #endregion
+            #region  Test
+            //1 hour, 1 minute and 2 seconds"(3662));
+            // 1 hour, 44 minutes and 40 seconds"(15731080));
+            //"4 years, 68 days, 3 hours and 4 minutes", (132030240));
+            //("6 years, 192 days, 13 hours, 3 minutes and 54 seconds"(205851834));
+            //("8 years, 12 days, 13 hours, 41 minutes and 1 second"(253374061));
+            //("7 years, 246 days, 15 hours, 32 minutes and 54 second(242062374));
+            //("3 years, 85 days, 1 hour, 9 minutes and 26 seconds"(101956166));
+            //("1 year, 19 days, 18 hours, 19 minutes and 46 seconds" (33243586));
+            #endregion
+
+            string result="";
+
+            int year = (seconds / (60 * 60 * 24 * 365));
+            result = year > 0 ? year > 1 ? year + " years, " :year+ " year, " :result+"" ;
+                                                                                                                        //Поможет ли для оптимизации все вычисления делать с одной переменной?
+            int days = (seconds / (60 * 60 * 24 )%365);                                                                 //
+            result = days > 0 ? result += days > 1 ? days + " days, " : days + " day, " :result+"";     
+
+            int hour = (seconds / (60 * 60)) % 24;
+            result = hour > 0 ? result += hour > 1 ? hour + " hours, " : hour + " hour, " : result + "";
+
+            int min = (seconds / 60) % 60;
+            result = min > 0 ? result += min > 1 ? min + " minutes, " : min + " minute, " : result + "";
+
+            int sec = seconds % 60;
+            result = sec > 0 ? result += sec > 1 ? sec + " seconds " :sec + " second " : result;
+
+            result = result.Trim().Trim(',');                                                           //При получившемся значении , когда кол-во секунд = 0 , удаляем пробел и запятую в конце
+            int index = result.LastIndexOf(',');                                                        //Находим индекс последнего вхождения запятой
+            result = index>0?result.Remove(index, 1).Insert(index, " and"):result;                      //Если он есть , то заменяем его на and , иначе возвращаем , что есть
+            
+
+            return result;           
+        }
+
     }
-    } 
+} 
