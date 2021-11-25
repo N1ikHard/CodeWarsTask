@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CodeWarsTask
 {
-     static class Kata
+    static class Kata
     {
         /// <summary>
         /// Преобразование секунд в формат ЧЧ:ММ:СС
@@ -209,18 +209,18 @@ namespace CodeWarsTask
              But was:  0
              */
             #endregion
-            Dictionary<string, List<int>> keyValuePairs=new Dictionary<string, List<int>>();
-            keyValuePairs.Add("pos" , new List<int>());
+            Dictionary<string, List<int>> keyValuePairs = new Dictionary<string, List<int>>();
+            keyValuePairs.Add("pos", new List<int>());
             keyValuePairs.Add("peaks", new List<int>());
             int index = 1;
             int Maximum;
             bool repeat = true;
-            for (int i = 1; i < arr.Length-1; i++)
+            for (int i = 1; i < arr.Length - 1; i++)
             {
                 if (arr[i] < arr[i + 1])
                 {
                     Maximum = arr[i + 1];
-                    index = i+1;
+                    index = i + 1;
                     repeat = true;
                 }
                 if (arr[i] > arr[i + 1])
@@ -233,8 +233,8 @@ namespace CodeWarsTask
                         keyValuePairs["peaks"].Add(n2);
                         repeat = false;
                     }
-                }               
-            }    
+                }
+            }
             return keyValuePairs;
         }
         /// <summary>
@@ -263,16 +263,16 @@ namespace CodeWarsTask
 
 
             // Лучнее решение     return string.Join(" ", str.Split(' ').Select(w => w.Any(char.IsPunctuation) ? w : w.Substring(1) + w[0] + "ay"));
-            
+
             #endregion
 
             string[] array = str.Split(" ");
             str = "";
             foreach (var item in array)
                 if (item == "," || item == "." || item == "!")
-                    str += item+" ";
+                    str += item + " ";
                 else str += item.Insert(item.Length, item[0] + "ay").Remove(0, 1) + " ";
-            return str.Remove(str.Length-1,1);
+            return str.Remove(str.Length - 1, 1);
         }
 
         /// <summary>
@@ -300,13 +300,13 @@ namespace CodeWarsTask
             //("1 year, 19 days, 18 hours, 19 minutes and 46 seconds" (33243586));
             #endregion
 
-            string result="";
+            string result = "";
 
             int year = (seconds / (60 * 60 * 24 * 365));
-            result = year > 0 ? year > 1 ? year + " years, " :year+ " year, " :result+"" ;
-                                                                                                                        //Поможет ли для оптимизации все вычисления делать с одной переменной?
-            int days = (seconds / (60 * 60 * 24 )%365);                                                                 //
-            result = days > 0 ? result += days > 1 ? days + " days, " : days + " day, " :result+"";     
+            result = year > 0 ? year > 1 ? year + " years, " : year + " year, " : result + "";
+            //Поможет ли для оптимизации все вычисления делать с одной переменной?
+            int days = (seconds / (60 * 60 * 24) % 365);                                                                 //
+            result = days > 0 ? result += days > 1 ? days + " days, " : days + " day, " : result + "";
 
             int hour = (seconds / (60 * 60)) % 24;
             result = hour > 0 ? result += hour > 1 ? hour + " hours, " : hour + " hour, " : result + "";
@@ -315,15 +315,179 @@ namespace CodeWarsTask
             result = min > 0 ? result += min > 1 ? min + " minutes, " : min + " minute, " : result + "";
 
             int sec = seconds % 60;
-            result = sec > 0 ? result += sec > 1 ? sec + " seconds " :sec + " second " : result;
+            result = sec > 0 ? result += sec > 1 ? sec + " seconds " : sec + " second " : result;
 
             result = result.Trim().Trim(',');                                                           //При получившемся значении , когда кол-во секунд = 0 , удаляем пробел и запятую в конце
             int index = result.LastIndexOf(',');                                                        //Находим индекс последнего вхождения запятой
-            result = index>0?result.Remove(index, 1).Insert(index, " and"):result;                      //Если он есть , то заменяем его на and , иначе возвращаем , что есть
-            
+            result = index > 0 ? result.Remove(index, 1).Insert(index, " and") : result;                      //Если он есть , то заменяем его на and , иначе возвращаем , что есть
 
-            return result;           
+
+            return result;
         }
+        /// <summary>
+        /// Валидатор судоку. Определяет соблюдены ли все правила расстановки цифр на сетке.
+        /// </summary>
+        /// <param name="board"></param>
+        /// <returns></returns>
+        public static bool ValidateSolution(int[][] board)
+        {
+            //Успешно пройдены все тесты!
 
+            #region ТЗ
+            //https://www.codewars.com/kata/529bf0e9bdf7657179000008/train/csharp
+            //Судоку - это игра, в которую играют на сетке 9х9.Цель игры состоит в том, чтобы заполнить все ячейки сетки цифрами от 1 до 9,
+            //чтобы каждый столбец, каждая строка и каждая из девяти подсеток 3x3(также известных как блоки) содержали все цифры от 1 до 9.
+            //Напишите функцию , которая принимает 2D - массив, представляющий доску судоку, и возвращает true,
+            //если это допустимое решение, или false в противном случае.Ячейки доски судоку также могут содержать 0, которые будут представлять пустые ячейки.
+            //Доски, содержащие один или несколько нулей, считаются недопустимыми решениями.
+            //Доска всегда состоит из 9 ячеек на 9 ячеек, и каждая ячейка содержит только целые числа от 0 до 9.
+
+            //Examples
+            //validSolution([
+            // [5, 3, 4, 6, 7, 8, 9, 1, 2],
+            // [6, 7, 2, 1, 9, 5, 3, 4, 8],
+            // [1, 9, 8, 3, 4, 2, 5, 6, 7],
+            // [8, 5, 9, 7, 6, 1, 4, 2, 3],
+            // [4, 2, 6, 8, 5, 3, 7, 9, 1],
+            // [7, 1, 3, 9, 2, 4, 8, 5, 6],
+            // [9, 6, 1, 5, 3, 7, 2, 8, 4],
+            // [2, 8, 7, 4, 1, 9, 6, 3, 5],
+            // [3, 4, 5, 2, 8, 6, 1, 7, 9]
+            //]); // => true
+            //            validSolution
+            // [5, 3, 4, 6, 7, 8, 9, 1, 2], 
+            // [6, 7, 2, 1, 9, 0, 3, 4, 8],
+            // [1, 0, 0, 3, 4, 2, 5, 6, 0],
+            // [8, 5, 9, 7, 6, 1, 0, 2, 0],
+            // [4, 2, 6, 8, 5, 3, 7, 9, 1],
+            // [7, 1, 3, 9, 2, 4, 8, 5, 6],
+            // [9, 0, 1, 5, 3, 7, 2, 1, 4],
+            // [2, 8, 7, 4, 1, 9, 6, 3, 5],
+            // [3, 0, 0, 4, 8, 1, 1, 7, 9]
+            // ]); // => false
+            #endregion
+
+            //Алгоритм поиска одинаковых значений по строкам
+            foreach (var item1 in board)
+                foreach (var item2 in item1)
+                    if (Array.IndexOf(item1, item2) != Array.LastIndexOf(item1, item2) || item2 == 0)
+                        return false;
+
+            //Сумма для проверки в по вертикали и кубах 3х3
+            int CheckSum = (9 + 1 + 8 + 2 + 7 + 3 + 6 + 4 + 5);
+
+            //Проверка по вертикали
+            for (int i = 0, sum = 0; i < board.Length; i++, sum = 0)
+            {
+                for (int j = 0; j < board.Length; j++)
+                {
+                    if (board[j][i] <= 0 || board[j][i] > 9)
+                        return false;
+                    else sum += board[j][i];
+                }
+                if (sum != CheckSum) 
+                    return false;
+            }
+
+            int CountCube = 0;
+            int StartIndexCol =0;
+            int StartIndexRow =0;
+            int LastIndexCol=0;
+            int LastIndexRow=0;
+
+            List<int> CheckList = new List<int>();
+           for( ; CountCube< board.Length; CountCube++)
+            { 
+                switch (CountCube)
+                {
+                    case 0:
+                        StartIndexCol = 0;
+                        LastIndexCol = 3;
+
+                        StartIndexRow = 0;
+                        LastIndexRow = 3;
+                        break;
+
+                    case 1:
+                        StartIndexRow = 0;
+                        LastIndexRow = 3;
+
+                        StartIndexCol = 3;
+                        LastIndexCol = 6;
+                        break;
+                    
+                    case 2:
+                        StartIndexRow = 0;
+                        LastIndexRow = 3;
+
+                        StartIndexCol = 6;
+                        LastIndexCol = 9;
+                        break;
+
+                    case 3:
+                        StartIndexRow = 3;
+                        LastIndexRow = 6;
+
+                        StartIndexCol = 0;
+                        LastIndexCol = 3;
+                        break;
+                    case 4:
+                        StartIndexRow = 3;
+                        LastIndexRow = 6;
+
+                        StartIndexCol = 3;
+                        LastIndexCol = 6;
+                        break;
+
+                    case 5:
+                        StartIndexRow = 3;
+                        LastIndexRow = 6;
+
+                        StartIndexCol = 6;
+                        LastIndexCol = 9;
+                        break;
+                    case 6:
+                        StartIndexRow = 6;
+                        LastIndexRow = 9;
+
+                        StartIndexCol = 0;
+                        LastIndexCol = 3;
+                        break;
+                    case 7:
+                        StartIndexRow = 6;
+                        LastIndexRow = 9;
+
+                        StartIndexCol = 3;
+                        LastIndexCol = 6;
+                        break;
+
+                    case 8:
+                        StartIndexRow = 6;
+                        LastIndexRow = 9;
+
+                        StartIndexCol = 6;
+                        LastIndexCol = 9;
+                        break;
+                }
+                for (; StartIndexRow < LastIndexRow; StartIndexRow++)
+                {
+                    int SaveIndexCol = StartIndexCol;
+                         for (; StartIndexCol < LastIndexCol; StartIndexCol++)
+                               CheckList.Add(board[StartIndexRow][StartIndexCol]);
+                    StartIndexCol = SaveIndexCol;
+                }
+
+            }
+            int[] array = CheckList.ToArray();
+            for (int i = 0,k=9,  sum = 0; i < array.Length - 10; i += 9, sum = 0 ,k+=9)
+            {
+                for (int j = i; j < k; j++)
+                    sum += array[j];
+
+                if (sum != CheckSum)
+                    return false;
+            }   
+            return true;
+        }
     }
 } 
